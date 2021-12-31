@@ -10,7 +10,7 @@ use defmt_rtt as _;
 use panic_probe as _;
 
 use cortex_m_rt::{entry, exception};
-use stm32_eth::stm32::{interrupt, CorePeripherals, Peripherals, SYST};
+//use stm32_eth::stm32::{interrupt, CorePeripherals, Peripherals, SYST};
 
 use core::cell::RefCell;
 use cortex_m::interrupt::Mutex;
