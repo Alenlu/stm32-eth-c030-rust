@@ -16,7 +16,9 @@ travis-ci = { repository = "astro/stm32-eth", branch = "master" }
 maintenance = { status = "experimental" }
 
 [package.metadata.docs.rs]
-features = ["smoltcp-phy", "smoltcp/socket-raw", "stm32f429"]
+#features = [ "smi", "smoltcp-phy", "stm32f429" ]
+features = [ "smi", "smoltcp-phy", "stm32f437" ]
+#features = ["smoltcp-phy", "smoltcp/socket-raw", "stm32f429"]
 
 [dependencies]
 volatile-register = "0.2"
@@ -36,12 +38,13 @@ features = ["medium-ethernet", "proto-ipv4"]
 optional = true
 
 [features]
+#device-selected = []
 default = [ "defmt" ]
-device-selected = []
+device-selected = ["stm32f4xx-hal"]
+
 fence = []
 
 stm32f107 = ["stm32f1xx-hal/stm32f107", "device-selected"]
-
 stm32f407 = ["stm32f4xx-hal/stm32f407", "device-selected"]
 stm32f417 = ["stm32f4xx-hal/stm32f417", "device-selected"]
 stm32f427 = ["stm32f4xx-hal/stm32f427", "device-selected"]
@@ -69,7 +72,7 @@ rtic-echo-example = [ "defmt", "smoltcp-phy", "smoltcp/defmt", "smoltcp/medium-e
 
 [dev-dependencies]
 cortex-m = "0.7"
-cortex-m-rt = "0.7"
+#cortex-m-rt = "0.7"
 fugit = "0.3"
 cortex-m-rtic = "1.0"
 defmt-rtt = "0.3"
@@ -78,21 +81,32 @@ systick-monotonic = "1.0"
 
 [[example]]
 name = "pktgen"
-required-features = [ "defmt" ]
+##required-features = ["smi", "stm32f429"]
+required-features = ["smi", "stm32f437"]
+#required-features = [ "defmt" ]
 
 [[example]]
 name = "ip"
 required-features = [
-    "defmt", "smoltcp-phy", "smoltcp/defmt", "smoltcp/socket-tcp"
-    ]
+#    "stm32f429", "smoltcp-phy", "log", "smoltcp/socket-tcp", "smoltcp/socket-icmp",
+#    "smoltcp/log", "smoltcp/verbose"
+    "stm32f437", "smoltcp-phy", "log", "smoltcp/socket-tcp", "smoltcp/socket-icmp",
+    "smoltcp/log", "smoltcp/verbose"
+#    "defmt", "smoltcp-phy", "smoltcp/defmt", "smoltcp/socket-tcp"    ]
 
 [[example]]
 name = "arp"
-required-features = [ "defmt" ]
+#required-features = ["stm32f407", "smi"]
+required-features = ["stm32f437", "smi"]
+#required-features = [ "defmt" ]
 
 [[example]]
-name = "rtic-echo"
-required-features = [ "rtic-echo-example" ]
+#name = "arp-smoltcp"
+#required-features = ["stm32f407", "smi", "smoltcp-phy", "smoltcp/socket-icmp"]
+name = "arp-smoltcp"
+required-features = ["stm32f437", "smi", "smoltcp-phy", "smoltcp/socket-icmp"]
+#name = "rtic-echo"
+#required-features = [ "rtic-echo-example" ]
 
 [profile.release]
 debug = 2

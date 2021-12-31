@@ -34,12 +34,32 @@ fn main() -> ! {
     let p = Peripherals::take().unwrap();
     let mut cp = CorePeripherals::take().unwrap();
 
+    #let rcc = p.RCC.constrain();
+    #let clocks = rcc.cfgr.sysclk(32.mhz()).hclk(32.mhz()).freeze();
+    let rcc = p.RCC.constrain();
+    // HCLK must be at least 25MHz to use the ethernet peripheral
+    let clocks = rcc.cfgr.use_hse(12.mhz()).sysclk(32.mhz()).hclk(32.mhz()).freeze();
     let (clocks, gpio, ethernet) = common::setup_peripherals(p);
 
     setup_systick(&mut cp.SYST);
 
+    //let gpiog = p.GPIOG.split();
+    #writeln!(stdout, "Enabling ethernet...").unwrap();
     defmt::info!("Enabling ethernet...");
 
+/*    let eth_pins = EthPins {
+*/
+    let eth_pins = EthPins {
+        ref_clk: gpioa.pa1,
+        crs: gpioa.pa7,
+        tx_en: gpiob.pb11,
+        tx_d0: gpiob.pb12,
+        tx_d1: gpiob.pb13,
+        rx_d0: gpioc.pc4,
+        rx_d1: gpioc.pc5,
+    };
+/*
+*/
     let (eth_pins, _mdio, _mdc) = common::setup_pins(gpio);
 
     let mut rx_ring: [RingEntry<_>; 2] = Default::default();
@@ -56,7 +76,7 @@ fn main() -> ! {
     .unwrap();
     eth_dma.enable_interrupt();
 
-    let local_addr = Ipv4Address::new(10, 0, 0, 1);
+    let local_addr = Ipv4Address::new(10, 0, 12, 189);
     let ip_addr = IpCidr::new(IpAddress::from(local_addr), 24);
     let mut ip_addrs = [ip_addr];
     let mut neighbor_storage = [None; 16];
