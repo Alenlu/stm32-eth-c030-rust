@@ -10,7 +10,7 @@ use defmt_rtt as _;
 use panic_probe as _;
 
 use cortex_m_rt::{entry, exception};
-//use stm32_eth::stm32::{interrupt, CorePeripherals, Peripherals, SYST};
+use stm32_eth::stm32::{interrupt, CorePeripherals, Peripherals, SYST};
 
 use core::cell::RefCell;
 use cortex_m::interrupt::Mutex;
@@ -22,7 +22,21 @@ use smoltcp::wire::{EthernetAddress, IpAddress, IpCidr, Ipv4Address};
 
 pub mod common;
 
-use stm32_eth::RingEntry;
+//use stm32_eth::{
+//    hal::gpio::GpioExt,
+//    hal::rcc::RccExt,
+//    stm32::Peripherals,
+//    RingEntry,
+//    EthPins,
+//};
+use stm32_eth::{
+    hal::gpio::GpioExt,
+    hal::rcc::RccExt,
+    EthPins,
+    RingEntry,
+};
+use fugit::RateExtU32;
+
 
 const SRC_MAC: [u8; 6] = [0x00, 0x00, 0xDE, 0xAD, 0xBE, 0xEF];
 
@@ -34,17 +48,20 @@ fn main() -> ! {
     let p = Peripherals::take().unwrap();
     let mut cp = CorePeripherals::take().unwrap();
 
-    #let rcc = p.RCC.constrain();
-    #let clocks = rcc.cfgr.sysclk(32.mhz()).hclk(32.mhz()).freeze();
+    //let rcc = p.RCC.constrain();
+    //let clocks = rcc.cfgr.sysclk(32.mhz()).hclk(32.mhz()).freeze();
     let rcc = p.RCC.constrain();
     // HCLK must be at least 25MHz to use the ethernet peripheral
-    let clocks = rcc.cfgr.use_hse(12.mhz()).sysclk(32.mhz()).hclk(32.mhz()).freeze();
-    let (clocks, gpio, ethernet) = common::setup_peripherals(p);
+    let clocks = rcc.cfgr.use_hse(12.MHz()).sysclk(32.MHz()).hclk(32.MHz()).freeze();
+    //let (clocks, gpio, ethernet) = common::setup_peripherals(p);
 
     setup_systick(&mut cp.SYST);
 
+    let gpioa = p.GPIOA.split();
+    let gpiob = p.GPIOB.split();
+    let gpioc = p.GPIOC.split();
     //let gpiog = p.GPIOG.split();
-    #writeln!(stdout, "Enabling ethernet...").unwrap();
+    //writeln!(stdout, "Enabling ethernet...").unwrap();
     defmt::info!("Enabling ethernet...");
 
 /*    let eth_pins = EthPins {
@@ -60,14 +77,14 @@ fn main() -> ! {
     };
 /*
 */
-    let (eth_pins, _mdio, _mdc) = common::setup_pins(gpio);
+//    let (eth_pins, _mdio, _mdc) = common::setup_pins(gpio);
 
     let mut rx_ring: [RingEntry<_>; 2] = Default::default();
     let mut tx_ring: [RingEntry<_>; 2] = Default::default();
     let (mut eth_dma, _eth_mac) = stm32_eth::new(
-        ethernet.mac,
-        ethernet.mmc,
-        ethernet.dma,
+		p.ETHERNET_MAC,
+        p.ETHERNET_MMC,
+        p.ETHERNET_DMA,
         &mut rx_ring[..],
         &mut tx_ring[..],
         clocks,

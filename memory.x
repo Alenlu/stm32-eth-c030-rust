@@ -1,12 +1,12 @@
 MEMORY
 {
-  //FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 2048K
+  /*FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 2048K*/
   CCMRAM (rw)     : ORIGIN = 0x10000000, LENGTH = 64K
 /* The STM32F437VG actually has 192K RAM but, in order to accommodate
  * the STM32F4 Discovery board, which has an STM32F407VG on it with only
  * 128K RAM, we only declare 128K here.  If you are working only on a
  * part with 192K RAM then change the line below to say LENGTH = 192K */
- // RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 128K
+  RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 128K
   FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 1024K
 }
 
