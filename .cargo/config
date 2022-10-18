@@ -1,6 +1,7 @@
-[target.thumbv7m-none-eabi]
+[target.thumbv7m-none-eabihf]
 # uncomment this to make `cargo run` execute programs on QEMU
 # runner = "qemu-system-arm -cpu cortex-m3 -machine lm3s6965evb -nographic -semihosting-config enable=on,target=native -kernel"
+#runner = "arm-none-eabihf-objcopy ip -O binary ip.bin"
 
 [target.'cfg(all(target_arch = "arm", target_os = "none"))']
 # uncomment ONE of these three option to make `cargo run` start a GDB session
@@ -10,7 +11,8 @@
 # runner = "gdb -q -x openocd.gdb"
 
 #[target.'cfg(all(target_arch = "arm", target_os = "none"))']
-runner = 'probe-run'
+#runner = 'probe-run'
+runner = "arm-none-eabi-objcopy ip -O binary ip.bin"
 rustflags = [
   # This is needed if your flash or ram addresses are not aligned to 0x10000 in memory.x
   # See https://github.com/rust-embedded/cortex-m-quickstart/pull/95

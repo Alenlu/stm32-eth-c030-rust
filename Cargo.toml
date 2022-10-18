@@ -110,5 +110,7 @@ required-features = ["stm32f437", "smi"]
 #required-features = [ "rtic-echo-example" ]
 
 [profile.release]
-debug = 2
+opt-level = 'z'
+debug = 0
 lto = true
+
