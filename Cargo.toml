@@ -27,9 +27,11 @@ stm32f7xx-hal = { version = "0.7.0", optional = true }
 stm32f4xx-hal = { version = "0.13", optional = true }
 stm32f1xx-hal = { version = "0.9", optional = true }
 ieee802_3_miim = "0.7"
-cortex-m = "0.7"
+cortex-m = { version = "0.7.6", features = ["critical-section-single-core"]}
+#cortex-m = "0.7"
 log = { version = "0.4", optional = true }
 defmt = { version = "0.3", optional = true }
+#critical-section = "1.1"
 
 [dependencies.smoltcp]
 version = "0.8"
@@ -38,6 +40,7 @@ features = ["medium-ethernet", "proto-ipv4"]
 optional = true
 
 [features]
+#critical-section-foo = ["critical-section/restore-state-bool"]
 #device-selected = []
 default = [ "defmt" ]
 device-selected = ["stm32f4xx-hal"]

@@ -93,7 +93,8 @@ fn main() -> ! {
     .unwrap();
     eth_dma.enable_interrupt();
 
-    let local_addr = Ipv4Address::new(10, 0, 12, 189);
+    //let local_addr = Ipv4Address::new(10, 0, 12, 189);
+    let local_addr = Ipv4Address::new(192, 168, 1, 69);
     let ip_addr = IpCidr::new(IpAddress::from(local_addr), 24);
     let mut ip_addrs = [ip_addr];
     let mut neighbor_storage = [None; 16];
